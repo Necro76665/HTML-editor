@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Editor</title>
-    <!-- Подключаем стили для CodeMirror -->
+    <title>Real-time HTML Editor with Dark Theme</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/theme/dracula.min.css">
 
@@ -31,10 +30,6 @@
             margin-bottom: 20px;
         }
 
-        textarea {
-            display: none; /* Скрываем стандартное textarea, оно не нужно для CodeMirror */
-        }
-
         iframe {
             width: 80%;
             height: 500px;
@@ -42,7 +37,6 @@
             background-color: #1e1e1e;
         }
 
-        /* Стилизация текста в редакторе */
         .CodeMirror {
             background-color: #282828;
             color: #f8f8f2;
@@ -61,33 +55,39 @@
     </style>
 </head>
 <body>
-    <h1>HTML Editor</h1>
+    <h1>Real-time HTML Editor</h1>
     <div class="editor-container">
         <textarea id="codeEditor" placeholder="Paste your HTML, CSS, and JS code here..."></textarea>
     </div>
     <iframe id="previewFrame" sandbox="allow-scripts" src="about:blank"></iframe>
 
-    <!-- Подключаем JavaScript для CodeMirror -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/xml/xml.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/css/css.min.js"></script>
 
     <script>
-        // Инициализация CodeMirror для подсветки синтаксиса
         const editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {
-            mode: 'htmlmixed', // Поддержка HTML, CSS и JavaScript
-            theme: 'dracula',  // Темная тема
-            lineNumbers: true, // Включить номера строк
-            tabSize: 2,        // Размер табуляции
-            lineWrapping: true // Автоперенос строк
+            mode: 'htmlmixed',
+            theme: 'dracula',
+            lineNumbers: true,
+            tabSize: 2,
+            lineWrapping: true
         });
 
-        // Функция для обновления предпросмотра в реальном времени
         editor.on('change', function() {
             const code = editor.getValue();
             const iframe = document.getElementById('previewFrame');
-            iframe.srcdoc = code; // Вставляем HTML код в iframe
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            // Вставляем только HTML и JavaScript, избегая самокопирования
+            try {
+                iframeDoc.open();
+                iframeDoc.write(code);  // Вставляем код
+                iframeDoc.close();
+            } catch (e) {
+                console.error("Error executing code in iframe:", e);
+            }
         });
     </script>
 </body>
