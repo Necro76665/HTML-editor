@@ -61,11 +61,11 @@
     </style>
 </head>
 <body>
-    <h1>Real-time HTML Editor</h1>
+    <h1>HTML Editor</h1>
     <div class="editor-container">
         <textarea id="codeEditor" placeholder="Paste your HTML, CSS, and JS code here..."></textarea>
     </div>
-    <iframe id="previewFrame"></iframe>
+    <iframe id="previewFrame" sandbox="allow-scripts" src="about:blank"></iframe>
 
     <!-- Подключаем JavaScript для CodeMirror -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
@@ -87,10 +87,7 @@
         editor.on('change', function() {
             const code = editor.getValue();
             const iframe = document.getElementById('previewFrame');
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            iframeDoc.open();
-            iframeDoc.write(code);
-            iframeDoc.close();
+            iframe.srcdoc = code; // Вставляем HTML код в iframe
         });
     </script>
 </body>
