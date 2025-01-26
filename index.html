@@ -78,16 +78,9 @@
         editor.on('change', function() {
             const code = editor.getValue();
             const iframe = document.getElementById('previewFrame');
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-            // Вставляем только HTML и JavaScript, избегая самокопирования
-            try {
-                iframeDoc.open();
-                iframeDoc.write(code);  // Вставляем код
-                iframeDoc.close();
-            } catch (e) {
-                console.error("Error executing code in iframe:", e);
-            }
+            // Вместо использования iframeDoc.write() используем srcdoc для прямой загрузки HTML
+            iframe.srcdoc = code;
         });
     </script>
 </body>
