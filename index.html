@@ -78,9 +78,12 @@
         editor.on('change', function() {
             const code = editor.getValue();
             const iframe = document.getElementById('previewFrame');
+            const iframeDoc = iframe.contentWindow.document;
 
-            // Вместо использования iframeDoc.write() используем srcdoc для прямой загрузки HTML
-            iframe.srcdoc = code;
+            // Обновление содержимого iframe, включая скрипты
+            iframeDoc.open();
+            iframeDoc.write(code);
+            iframeDoc.close();
         });
     </script>
 </body>
